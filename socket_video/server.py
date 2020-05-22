@@ -13,7 +13,7 @@ class CameraAcceptObject:
         # 视频流对象
         self.video = None
         # 摄像头分辨率
-        self.resolution = (640, 480)
+        self.resolution = (1600, 800)
         # 图片质量
         self.img_quality = 100
         # 视频帧率
@@ -35,6 +35,7 @@ class CameraAcceptObject:
         self.server.listen(5)
 
 
+# 信息校验
 def check_option(obj, cli):
     # 按格式解码，确定帧数和分辨率
     info = struct.unpack('lhh', cli.recv(8))
@@ -52,45 +53,13 @@ def check_option(obj, cli):
         return False
 
 
-# def rt_image(obj, cli, address):
-#     if check_option(obj, cli) is False:
-#         return
-#     # 从摄像头中获取视频
-#     camera = cv2.VideoCapture(0)
-#     # 设置相机尺寸
-#     camera.set(cv2.CAP_PROP_FRAME_WIDTH, obj.resolution[0])
-#     camera.set(cv2.CAP_PROP_FRAME_HEIGHT, obj.resolution[1])
-#     # 设置传送图像格式, 图片质量(0-100越大质量越高)
-#     img_param = [int(cv2.IMWRITE_JPEG_QUALITY), obj.img_quality]
-#     while True:
-#         # 推迟线程运行0.1s
-#         time.sleep(0.1)
-#         # 读取视频每一帧
-#         _, obj.img = camera.read()
-#         # 按格式生成图片
-#         _, img_encode = cv2.imencode('.jpg', obj.img, img_param)
-#         # 将图片转换成矩阵
-#         img_code = numpy.array(img_encode)
-#         # 图片对应的矩阵, 生成相应的字符串
-#         obj.img_data = img_code.tostring()
-#         try:
-#             # 按照相应的格式进行打包发送图片
-#             cli.send(struct.pack("lhh", len(obj.img_data), obj.resolution[0],
-#                                  obj.resolution[1]) + obj.img_data)
-#         except:
-#             # 释放摄像头资源
-#             camera.release()
-#             return
-
-
+# 发送图片信息
 def rt_image(obj, cli, address):
     if check_option(obj, cli) is False:
         return
     # 设置传送图像格式, 图片质量(0-100越大质量越高)
     img_param = [int(cv2.IMWRITE_JPEG_QUALITY), obj.img_quality]
     while True:
-        # 推迟线程运行0.1s
-        # time.sleep(0.05)
         # 读取视频每一帧
         obj.img = obj.video.camera_image
         # 按格式生成图片
@@ -112,20 +81,20 @@ def rt_image(obj, cli, address):
 
 if __name__ == '__main__':
     camera_object = CameraAcceptObject()
-    # while True:
-    #     client, address = camera_object.server.accept()
-    #     if address:
-    #         break
+    while True:
+        client, address = camera_object.server.accept()
+        if address:
+            break
     # 创建视频流对象
     camera_object.video = ExternalCameraVideo(video_path='D:/Code/robot/video', video_width=1600, video_height=800)
     time.sleep(5)
-    # clientThread = threading.Thread(target=rt_image, args=(camera_object, client, address,))
-    # clientThread.start()
+    clientThread = threading.Thread(target=rt_image, args=(camera_object, client, address,))
+    clientThread.start()
 
-    # 第一个视频
-    camera_object.video.start_record_video(case_type='test', case_name='123')
-    time.sleep(5)
-    # 模拟机械臂产生一个起始信号
-    camera_object.video.robot_start_flag = True
-    time.sleep(5)
-    camera_object.video.stop_record_video()
+    # # 第一个视频
+    # camera_object.video.start_record_video(case_type='test', case_name='123')
+    # time.sleep(5)
+    # # 模拟机械臂产生一个起始信号
+    # camera_object.video.robot_start_flag = True
+    # time.sleep(5)
+    # camera_object.video.stop_record_video()

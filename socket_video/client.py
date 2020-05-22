@@ -1,5 +1,6 @@
 # 客户端
 import socket
+import time
 import cv2
 import threading
 import struct
@@ -7,7 +8,7 @@ import numpy
 
  
 class CameraConnectObject:
-    def __init__(self, address_port=["", 8880]):
+    def __init__(self, address_port=('localhost', 8880)):
         self.resolution = [640, 480]
         # 客户端对象
         self.client = None
@@ -61,8 +62,8 @@ class CameraConnectObject:
                 except:
                     pass
                 finally:
-                    # 每10ms刷新一次图片，按‘ESC’（27）退出
-                    if cv2.waitKey(10) == 27:
+                    # 每10ms刷新一次图片，按'ESC'(27)退出
+                    if cv2.waitKey(5) == 27:
                         self.client.close()
                         cv2.destroyAllWindows()
                         break
@@ -71,10 +72,17 @@ class CameraConnectObject:
         show_thread = threading.Thread(target=self.rt_image)
         show_thread.start()
 
+    # 开始录制视频
+    def start_record_video(self):
+        self.client.send('shensong'.encode())
+        while True:
+            print(self.client.recv(1024).decode())
+            break
+
 
 if __name__ == '__main__':
     camera = CameraConnectObject()
-    camera.address_port[0] = input("Please input IP:")
-    camera.address_port = tuple(camera.address_port)
     camera.socket_connect()
     camera.get_data(camera.interval)
+    time.sleep(5)
+    camera.start_record_video()

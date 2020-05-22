@@ -14,10 +14,6 @@ class ExternalCameraVideo:
         # 视频需要保存的高和宽
         self.video_width = video_width
         self.video_height = video_height
-        self.load_cam()
-
-    # 重新加载cam
-    def load_cam(self):
         # 相机对象
         self.cam = None
         # 当前帧
@@ -30,6 +26,14 @@ class ExternalCameraVideo:
         self.frame_id = 0
         # 保存视频帧列表
         self.video_frames_list = []
+        '''视频保存需要用到'''
+        # 保存帧id的列表(保存视频的时候有用, 需要对丢掉的帧补帧)
+        self.frame_id_list = []
+        # 保存上一帧id
+        self.last_frame_id = 0
+        # 保存上一帧图像
+        self.last_frame_image = None
+        '''end'''
         # 开始和停止录像标志
         self.record_flag = False
         # 可以开始插入起点(只有此标志置位后才能开始标起始帧)
@@ -98,8 +102,8 @@ class ExternalCameraVideo:
         '''120帧'''
         # 相机采集帧率(相机采集帧率设置为120)
         self.cam.AcquisitionFrameRate.set(self.frame_rate)
-        # set exposure(曝光设置为8250, 通过相机帧率计算公司得到, 120帧对应曝光时间为120fps)
-        self.cam.ExposureTime.set(8250.0)
+        # set exposure(曝光设置为8285, 通过相机帧率计算公司得到, 120帧对应曝光时间为120fps)
+        self.cam.ExposureTime.set(8285.0)
         # set gain(设置增益, 调节相机亮度)
         self.cam.Gain.set(0.0)
         '''100帧'''
@@ -130,8 +134,14 @@ class ExternalCameraVideo:
                 print('Getting image failed.')
                 continue
             if self.record_flag is True:
-                Thread(target=self.get_frame, args=(raw_image, self.allow_start_flag,)).start()
                 self.frame_id += 1
+                # 获取当前帧id
+                current_frame_id = raw_image.get_frame_id()
+                self.frame_id_list.append(current_frame_id)
+                if self.frame_id == 1:
+                    self.last_frame_id = current_frame_id - 1
+                # 处理图像raw_image
+                Thread(target=self.get_frame, args=(raw_image, self.allow_start_flag,)).start()
             else:
                 numpy_image = raw_image.get_numpy_array()
                 image = cv2.cvtColor(np.asarray(numpy_image), cv2.COLOR_BayerBG2BGR)
@@ -149,9 +159,6 @@ class ExternalCameraVideo:
         # rgb_image = raw_image.convert("RGB")
         # # (从RGB图像数据创建numpy数组)
         # numpy_image = rgb_image.get_numpy_array()
-
-        # # 获取当前帧id
-        # current_frame_id = raw_image.get_frame_id()
         # 这里直接使用open-cv将raw原生图转为open-cv支持的BGR(替换掉大恒将raw转为RGB的过程)
         numpy_image = raw_image.get_numpy_array()
         self.camera_image = cv2.cvtColor(np.asarray(numpy_image), cv2.COLOR_BayerBG2BGR)
@@ -178,15 +185,35 @@ class ExternalCameraVideo:
         out = cv2.VideoWriter(self.video_file_name, fourcc, self.frame_rate, (self.video_width, self.video_height))
         while True:
             if len(self.video_frames_list) > 0:
-                frame = self.un_distortion(self.video_frames_list[0])
-                out.write(frame)
-                self.video_frames_list.pop(0)
+                if self.frame_id_list[0] == self.last_frame_id + 1:
+                    frame = self.un_distortion(self.video_frames_list[0])
+                    out.write(frame)
+                    self.last_frame_id = self.frame_id_list[0]
+                    self.last_frame_image = self.video_frames_list[0]
+                    self.video_frames_list.pop(0)
+                    self.frame_id_list.pop(0)
+                else:
+                    frame = self.last_frame_image
+                    out.write(frame)
+                    self.last_frame_id += 1
+                    self.frame_id += 1
+                self.last_frame_image = frame
             elif self.record_flag is False:
                 while True:
                     if len(self.video_frames_list) > 0:
-                        frame = self.un_distortion(self.video_frames_list[0])
-                        out.write(frame)
-                        self.video_frames_list.pop(0)
+                        if self.frame_id_list[0] == self.last_frame_id + 1:
+                            frame = self.un_distortion(self.video_frames_list[0])
+                            out.write(frame)
+                            self.last_frame_id = self.frame_id_list[0]
+                            self.last_frame_image = self.video_frames_list[0]
+                            self.video_frames_list.pop(0)
+                            self.frame_id_list.pop(0)
+                        else:
+                            frame = self.last_frame_image
+                            out.write(frame)
+                            self.last_frame_id += 1
+                            self.frame_id += 1
+                        self.last_frame_image = frame
                     else:
                         break
                 break
@@ -194,7 +221,8 @@ class ExternalCameraVideo:
                 time.sleep(0.001)
         out.release()
         self.restart_record_flag = True
-        print('视频保存结束: %s' % self.video_file_name)
+        print('视频保存结束: %s, 视频总帧数为: %d' % (self.video_file_name, self.frame_id))
+        self.frame_id = 0
 
     def start_record_video(self, case_type='test', case_name='test'):
         # 判断视频是否保存完成(保存完毕才允许再次开始录像)
@@ -225,9 +253,7 @@ class ExternalCameraVideo:
         # 多录制一秒钟(预防结束的太早)
         time.sleep(1)
         self.record_flag = False
-        print('当前视频总帧数为: %d' % self.frame_id)
         print('正在保存缓存区的视频...')
-        self.frame_id = 0
 
     def stop_record_thread(self):
         # 判断视频是否保存完成(保存完才能停止线程)
