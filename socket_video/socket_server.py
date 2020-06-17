@@ -82,8 +82,15 @@ class CameraService:
     # 接收客户端消息
     def receive_client_message(self, cli):
         while True:
-            print(cli.recv(1024).decode())
-            cli.send('123'.encode())
+            signal = cli.recv(1024).decode()
+            if signal == 'start_record':
+                # 这里调用开始录制视频的函数
+                pass
+            elif signal == 'stop_record':
+                # 这里调用结束录制视频的函数
+                # pass
+                # 之后返回视频文件名
+                cli.send(signal.encode())
 
 
 if __name__ == '__main__':
