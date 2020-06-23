@@ -1,3 +1,4 @@
+"""面试算法"""
 
 
 def binary_search(a_list, item):
@@ -18,10 +19,6 @@ def binary_search(a_list, item):
         elif a_list[mid] < item:
             left = mid + 1
     return -1
-
-
-test_list = [0, 1, 2, 8, 13, 17, 19, 32, 42]
-print(binary_search(test_list, 8))
 
 
 def bubble_sort(a_list):
@@ -53,3 +50,12 @@ def insert_sort(a_list):
         # 变量赋值给合适的位置
         a_list[position] = current_value
     return a_list
+
+
+if __name__ == '__main__':
+    # 二分查找
+    test_list = [0, 1, 2, 8, 13, 17, 19, 32, 42]
+    print(binary_search(test_list, 8))
+    # 插入排序
+    aaa = [3, 1, 2, 4]
+    print(insert_sort(aaa))
