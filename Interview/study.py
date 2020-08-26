@@ -52,10 +52,34 @@ def insert_sort(a_list):
     return a_list
 
 
-if __name__ == '__main__':
-    # 二分查找
-    test_list = [0, 1, 2, 8, 13, 17, 19, 32, 42]
-    print(binary_search(test_list, 8))
-    # 插入排序
-    aaa = [3, 1, 2, 4]
-    print(insert_sort(aaa))
+def string_sort(string_list):
+    """
+    将'+'和'-'两种字符组成的列表排序, 将+放在前面, 将-放在后面
+    :param string_list:
+    :return:
+    """
+    length = len(string_list)
+    start_position = 0
+    end_position = 0
+    while start_position + end_position < length:
+        if string_list[start_position] == '-':
+            string_list[start_position], string_list[length-1-end_position] =\
+                string_list[length-1-end_position], string_list[start_position]
+            end_position += 1
+        else:
+            start_position += 1
+    return string_list
+
+
+def fib(n):
+    """
+    斐波那契(用来解决爬楼梯问题, 楼梯一次可以爬1步或者2步)
+    :param n:
+    :return:
+    """
+    a, b = 1, 1
+    for i in range(n - 1):
+        a, b = a + b, a
+    return a
+
+

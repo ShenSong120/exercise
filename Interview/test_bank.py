@@ -162,6 +162,167 @@ class Student(Person):
 """
 
 
+# 测试流程
+"""
+1. 测试需求(文档, 说明书)
+2. 界面测试(外观等等)
+3. 功能度(基本功能实现)
+4. 安全性
+5. 抗破坏性
+6. 可移植性
+7. 兼容性
+8. 易用性
+9. 压力测试
+10.等等
+"""
+
+
+# def judge_str(string):
+#     flag = True
+#     cycle_num = int(len(string)/2)+1
+#     for i in range(cycle_num):
+#         if '()' in string:
+#             string = string.replace('()', '')
+#         elif '[]' in string:
+#             string = string.replace('[]', '')
+#         elif '{}' in string:
+#             string = string.replace('{}', '')
+#         else:
+#             if len(string) == 0:
+#                 flag = True
+#             else:
+#                 flag = False
+#             break
+#     print(string)
+#     return flag
+#
+#
+# a = '{[()]}'
+# print(judge_str(a))
+
+
+'''二分法查找'''
+# a = [1, 2, 4, 5, 7]
+# b = [3, 4, 5, 6]
+# new = []
+#
+# cycle_num = len(a+b)
+# for i in range(cycle_num):
+#     if len(a) > 0 and len(b) > 0:
+#         if a[0] <= b[0]:
+#             new.append(a[0])
+#             a.pop(0)
+#         else:
+#             new.append(b[0])
+#             b.pop(0)
+#     else:
+#         break
+# if len(a) > 0:
+#     new.extend(a)
+# elif len(b) > 0:
+#     new.extend(b)
+# print(new, a, b)
+
+
+'''冒泡'''
+# def bubble_sort(a_list):
+#     for pass_num in range(0, len(a_list)-1):
+#         for i in range(len(a_list) - pass_num - 1):
+#             if a_list[i] > a_list[i+1]:
+#                 a_list[i], a_list[i+1] = a_list[i+1], a_list[i]
+#     return a_list
+#
+#
+# print(bubble_sort([1, 5, 4, 6, 2, 8]))
+
+
+# '''插入排序'''
+# def insert_sort(a_list):
+#     for index in range(1, len(a_list)):
+#         current_value = a_list[index]
+#         position = index
+#         while position > 0 and a_list[position-1] > current_value:
+#             a_list[position] = a_list[position-1]
+#             position -= 1
+#         a_list[position] = current_value
+
+
+'''选择排序'''
+# def selection_sort(a_list):
+#     for i in range(len(a_list)-1):
+#         min = i
+#         for j in range(i+1, len(a_list)):
+#             if a_list[j] < a_list[min]:
+#                 min = j
+#         a_list[i], a_list[min] = a_list[min], a_list[i]
+#     return a_list
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
