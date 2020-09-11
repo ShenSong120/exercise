@@ -20,7 +20,7 @@ class Person:
 
 
 class Student(Person):
-    def __init__(self, name, gender, age,score):
+    def __init__(self, name, gender, age, score):
         super(Student, self).__init__(name, gender, age)
         self.score = score
 
@@ -43,7 +43,6 @@ class Student(Person):
 
 
 # 7.TCP三次握手和四次握手, 请分别写出来
-
 
 
 
@@ -153,6 +152,44 @@ class Student(Person):
 
 
 
+# 百度三面内容
+# 1. 自我介绍
+# 2. 为什么base选上海？
+# 3. 平时怎么学习一个新东西？
+# 4. 怎么看待测开？
+# 5. 职业规划
+# 6. 判断IP地址是否合法的测试用例
+# 7. 还投了哪些？有什么offer？
+# -----------------
+# 自我介绍
+# 项目相关
+# 有什么offer,怎么选择？
+# 你遇到的一个难点，怎么解决的？
+# 简历上有提到自己喜欢学习新技术，问学了哪些技术，怎么学习的？
+# 你在校期间最有成就感的一件事？
+# 你学的最好的一门课？我说了数据结构、算法等。问了算法中你学到的一些算法，我讲了冒泡和快排
+# 你的职业规划？
+# 你在校遇到的最有挫折的一件事？
+# 有没有男朋友，你的家人怎么看待你的第一份工作的地域问题？
+# 有没有什么想问我的？
+# 为什么做测开
+# -------------------
+# Linux按端口号查看进程，查找文件
+# -------------------
+# 讲一下项目，背景、所用方法、效果
+# 对于测开的理解，干嘛的，需要具备什么能力，我为啥能做测开
+# 你的优点和缺点
+# 有没有榜样，身边的人有么
+# 遗憾的事情
+# 日常生活中有没有感觉到困难的事情（求职期间还要做科研项目）
+# 如果给你一个不熟悉的项目，三天之内完成，你会怎么做
+# 技术深度和技术广度的工作你会选择哪个
+# 想做测开的原因
+# 意向城市
+# 反问
+
+
+
 
 # linux三剑客
 """
@@ -177,6 +214,7 @@ class Student(Person):
 """
 
 
+'''判断字符串'''
 # def judge_str(string):
 #     flag = True
 #     cycle_num = int(len(string)/2)+1
@@ -201,7 +239,7 @@ class Student(Person):
 # print(judge_str(a))
 
 
-'''二分法查找'''
+'''两个有序列表合并'''
 # a = [1, 2, 4, 5, 7]
 # b = [3, 4, 5, 6]
 # new = []
@@ -236,7 +274,7 @@ class Student(Person):
 # print(bubble_sort([1, 5, 4, 6, 2, 8]))
 
 
-# '''插入排序'''
+'''插入排序'''
 # def insert_sort(a_list):
 #     for index in range(1, len(a_list)):
 #         current_value = a_list[index]
@@ -256,6 +294,133 @@ class Student(Person):
 #                 min = j
 #         a_list[i], a_list[min] = a_list[min], a_list[i]
 #     return a_list
+
+
+'''词典排序'''
+# from collections import Counter
+#
+#
+# a = [1, 2, 4, 1, 4, 5, 6, 1, 7]
+#
+# b = dict(Counter(a))
+#
+# b = sorted(b.items(), key=lambda i: i[1], reverse=True)
+#
+# print(b[0][1])
+
+
+'''两个有序链表组成有序链表'''
+# a = [1, 3, 5, 7, 9, 14, 15]
+# b = [0, 2, 4, 6, 8]
+#
+# new_list = []
+# while a and b:
+#     if a[0] >= b[0]:
+#         new_list.append(b[0])
+#         b.pop(0)
+#     else:
+#         new_list.append(a[0])
+#         a.pop(0)
+# if a:
+#     new_list.extend(a)
+# if b:
+#     new_list.extend(b)
+# print(new_list)
+
+
+'''判断字符串是否成对出现'''
+# a = '({[()]}'
+# for i in range(len(a)//2 + 1):
+#     if '()' in a:
+#         a = a.replace('()', '')
+#     elif '[]' in a:
+#         a = a.replace('[]', '')
+#     elif '{}' in a:
+#         a = a.replace('{}', '')
+#     else:
+#         break
+# if len(a) > 0:
+#     flag = 0
+# else:
+#     flag = 1
+# print(flag)
+
+
+'''两个字符串类型数字相加'''
+# a = '123456779'
+# b = '7824876'
+# e_num = abs(len(a) - len(b))
+# if len(a) > len(b):
+#     b = e_num * '0' + b
+# elif len(a) < len(b):
+#     a = e_num * '0' + a
+# else:
+#     pass
+# a_list = list(a)
+# b_list = list(b)
+# new_list = []
+# add_position = 0
+# for i in range(max(len(a), len(b))):
+#     a_num = int(a_list[-1])
+#     b_num = int(b_list[-1])
+#     position = (a_num + b_num + add_position) % 10
+#     add_position = (a_num + b_num + add_position) // 10
+#     new_list.insert(0, position)
+#     a_list.pop(-1)
+#     b_list.pop(-1)
+# if add_position != 0:
+#     new_list.insert(0, add_position)
+# print(''.join(map(str, new_list)))
+
+
+'''二分法查找'''
+# def search(a_list, num):
+#     start = 0
+#     end = len(a_list)-1
+#     while end >= start:
+#         mid = len(a_list) // 2
+#         if num > a_list[mid]:
+#             start = mid + 1
+#         elif num < a_list[mid]:
+#             end = mid - 1
+#         else:
+#             return mid
+#     return -1
+#
+#
+# print(search([1, 2, 3, 4, 5], 3))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
